@@ -6,17 +6,17 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 21:05:49 by saberton          #+#    #+#             */
-/*   Updated: 2024/10/09 22:56:35 by saberton         ###   ########.fr       */
+/*   Updated: 2024/10/10 17:54:55 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILOSOPHERS_H
 # define PHILOSOPHERS_H
 
-# include <unistd.h>
+# include <pthread.h>
 # include <stdio.h>
 # include <stdlib.h>
-# include <pthread.h>
+# include <unistd.h>
 
 # define RESET "\e[0m"
 # define RED "\e[1;91m"
@@ -41,5 +41,10 @@ typedef struct s_data
 	int				sleep_time;
 	int				meals;
 }					t_data;
+
+void				ft_bzero(void *s, size_t n);
+int					exit_prog(t_data *data);
+int					init_data(char **av, t_data *data);
+long				ft_atol(const char *str);
 
 #endif

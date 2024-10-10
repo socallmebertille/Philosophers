@@ -6,86 +6,29 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 21:08:19 by saberton          #+#    #+#             */
-/*   Updated: 2024/10/09 23:09:11 by saberton         ###   ########.fr       */
+/*   Updated: 2024/10/10 17:54:45 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-static long	ft_atol(const char *str)
+int	exit_prog(t_data *data)
 {
-	long	nb;
-	int		sign;
-	int		i;
+	t_philo	*tmp;
+	t_philo	*next;
 
-	nb = 0;
-	sign = 1;
-	i = 0;
-	while (str[i] && (str[i] == ' ' || str[i] == '\t' || str[i] == '\n'
-			|| str[i] == '\r' || str[i] == '\v' || str[i] == '\f'))
-		i++;
-	if (str[i] == '+')
-		i++;
-	else if (str[i] == '-')
+	if (data->first)
+		tmp = data->first;
+	while (data->nb_philo-- > 0)
 	{
-		sign *= -1;
-		i++;
+		next = tmp->right;
+		free(tmp);
+		tmp = next;
 	}
-	while (str[i] >= '0' && str[i] <= '9')
-	{
-		nb = (nb * 10) + (str[i] - '0');
-		i++;
-	}
-	return (nb * sign);
-}
-
-static int add_philo(t_philo *philo, int num)
-{
-	t_philo	*new_philo;
-	int		i;
-
-	new_philo = malloc(sizeof(t_philo));
-	if (!new_philo)
-		return (printf(RED "Error malloc.\n" RESET), EXIT_FAILURE);
-	i = 1;
-	while (i <= num)
-	{
-		if (i == 1)
-			philo->left = new_philo;
-		philo->seat = num;
-		philo->fork = num;
-		// philo->right =
-		i++;
-	}
-	return (1);
-}
-
-static int	init_philo(char **av, t_data *data, int nb_philo)
-{
-	int	num;
-	t_philo	*philo;
-
-	philo = malloc(sizeof(t_philo));
-	if (!philo)
-		return (printf(RED "Error malloc.\n" RESET), EXIT_FAILURE);
-	data->first = philo;
-	data->nb_philo = nb_philo;
-	data->nb_fork = nb_philo;
-	num = 1;
-	while (num <= nb_philo)
-	{
-		if (!add_philo(data->first, num++))
-			return (printf(RED "Error malloc.\n" RESET), EXIT_FAILURE);
-		num++;
-	}
-	data->death_time = ft_atol(av[2]);
-	data->meal_time = ft_atol(av[3]);
-	data->sleep_time = ft_atol(av[4]);
-	if (av[5])
-		data->meals = ft_atol(av[2]);
-	else
-		data->meals = -1;
-	return (1);
+	if (data)
+		free(data);
+	data = NULL;
+	retun(EXIT_FAILURE);
 }
 
 int	main(int ac, char **av)
@@ -102,8 +45,9 @@ int	main(int ac, char **av)
 		printf("Number of meals : [%s].\n", av[5]);
 	data = malloc(sizeof(t_philo));
 	if (!data)
-		return (printf(RED "Error malloc.\n" RESET), EXIT_FAILURE);
-	if (!init_philo(av, data, ft_atol(av[1])))
-		return (free(data), printf(RED "Error malloc.\n" RESET), EXIT_FAILURE);
+		return (printf(RED "Error malloc.\n" RESET), exit_prog(data));
+	ft_bzero(data, sizeof(t_data));
+	if (!init_data(av, data))
+		return (printf(RED "Error malloc.\n" RESET), exit_prog(data));
 	return (EXIT_SUCCESS);
 }
