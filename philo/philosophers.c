@@ -6,7 +6,7 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 21:08:19 by saberton          #+#    #+#             */
-/*   Updated: 2024/10/10 17:54:45 by saberton         ###   ########.fr       */
+/*   Updated: 2024/10/11 16:30:30 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,24 @@ int	exit_prog(t_data *data)
 	if (data)
 		free(data);
 	data = NULL;
-	retun(EXIT_FAILURE);
+	return (EXIT_FAILURE);
+}
+
+static void	print_philo(t_data *data)
+{
+	t_philo	*cur;
+	int		i;
+
+	cur = data->first;
+	i = 1;
+	while (i <= data->nb_philo)
+	{
+		printf("[left : %d ]", cur->left->seat);
+		printf("[seat : %d ]", cur->seat);
+		printf("[right] : %d]\n", cur->right->seat);
+		cur = cur->right;
+		i++;
+	}
 }
 
 int	main(int ac, char **av)
@@ -36,18 +53,14 @@ int	main(int ac, char **av)
 	t_data	*data;
 
 	if (ac < 4 || ac > 6)
-		return (EXIT_FAILURE);
-	printf("Number of philo : [%s].\n", av[1]);
-	printf("Philos had [%s] milliseconds before eating.\n", av[2]);
-	printf("Philos need to eat during [%s] milliseconds.\n", av[3]);
-	printf("Philos sleep at least [%s] milliseconds.\n", av[4]);
-	if (ac == 6)
-		printf("Number of meals : [%s].\n", av[5]);
-	data = malloc(sizeof(t_philo));
+		return (printf(RED WRONG_ARGS RESET), printf(YELLOW EXEMPLE RESET),
+			printf(ORANGE FOR_WHAT RESET), EXIT_FAILURE);
+	data = malloc(sizeof(t_data));
 	if (!data)
 		return (printf(RED "Error malloc.\n" RESET), exit_prog(data));
 	ft_bzero(data, sizeof(t_data));
 	if (!init_data(av, data))
 		return (printf(RED "Error malloc.\n" RESET), exit_prog(data));
+	print_philo(data);
 	return (EXIT_SUCCESS);
 }
