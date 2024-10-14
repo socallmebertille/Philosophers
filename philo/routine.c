@@ -6,16 +6,22 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 16:47:40 by saberton          #+#    #+#             */
-/*   Updated: 2024/10/14 17:04:40 by saberton         ###   ########.fr       */
+/*   Updated: 2024/10/14 17:27:38 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-static void	eating(t_philo *philo)
+static void	eating(t_philo *philo, t_table *table)
 {
 	philo->status = EATING;
 	printf("timestamp_in_ms %d has taken a fork\n", philo->seat);
+	if (table->nb_philo == 1)
+	{
+		printf(RED "timestamp_in_ms %d died\n" RESET, philo->seat);
+		exit_prog(table);
+		exit(0);
+	}
 	printf(BLUE "timestamp_in_ms %d is eating\n" RESET, philo->seat);
 	philo->nb_meals += 1;
 }
@@ -43,7 +49,7 @@ static int	everybody_has_eaten(t_table *table)
 	t_philo	*philo;
 	int		nb;
 
-	if (table->meals == -1)
+	if (table->meals == -1 || table->nb_philo == 1)
 		return (0);
 	philo = table->first;
 	nb = 1;
@@ -70,7 +76,7 @@ void	*routine(t_table *table)
 		while (nb <= table->nb_philo)
 		{
 			if (philo->status == THINKING)
-				eating(philo);
+				eating(philo, table);
 			else if (philo->status == EATING)
 				sleeping(philo);
 			else if (philo->status == SLEEPING)

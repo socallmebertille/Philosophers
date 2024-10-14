@@ -6,7 +6,7 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 21:08:19 by saberton          #+#    #+#             */
-/*   Updated: 2024/10/14 17:04:10 by saberton         ###   ########.fr       */
+/*   Updated: 2024/10/14 17:19:53 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ int	exit_prog(t_table *table)
 	t_philo	*tmp;
 	t_philo	*next;
 
+	if (table->nb_philo <= 0)
+		printf(RED "Number of philos must be positive.\n" RESET);
 	if (table->first)
 		tmp = table->first;
 	while (table->nb_philo-- > 0)
@@ -61,7 +63,7 @@ int	main(int ac, char **av)
 		return (printf(RED "Error malloc.\n" RESET), exit_prog(table));
 	ft_bzero(table, sizeof(t_table));
 	if (!init_table(av, table))
-		return (printf(RED "Error malloc.\n" RESET), exit_prog(table));
+		return (exit_prog(table));
 	// print_philo(table);
 	routine(table);
 	exit_prog(table);

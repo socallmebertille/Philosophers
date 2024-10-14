@@ -6,7 +6,7 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 17:46:09 by saberton          #+#    #+#             */
-/*   Updated: 2024/10/14 17:02:17 by saberton         ###   ########.fr       */
+/*   Updated: 2024/10/14 17:20:59 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,8 @@ static int	init_philo(t_table *table, int nb_philo)
 	t_philo	*new_philo;
 	t_philo	*cur;
 
+	if (nb_philo == 1)
+		return (1);
 	cur = table->first;
 	num = 2;
 	while (num <= nb_philo)
@@ -80,6 +82,8 @@ int	init_table(char **av, t_table *table)
 	table->first->fork = 1;
 	table->first->status = THINKING;
 	table->nb_philo = ft_atol(av[1]);
+	if (table->nb_philo <= 0)
+		return (free(philo), 0);
 	table->nb_fork = ft_atol(av[1]);
 	table->death_time = ft_atol(av[2]);
 	table->meal_time = ft_atol(av[3]);
