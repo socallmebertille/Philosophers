@@ -6,7 +6,7 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 21:05:49 by saberton          #+#    #+#             */
-/*   Updated: 2024/10/14 11:56:03 by saberton         ###   ########.fr       */
+/*   Updated: 2024/10/14 15:32:52 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # define PURPLE "\033[1;35m"
 # define YELLOW "\e[1;93m"
 # define ORANGE "\e[38;5;214m"
+# define BLUE "\e[1;94m"
 
 # define WRONG_ARGS "Wrong number of args\n"
 # define EXEMPLE "Write something like that : ./philo 5 800 200 100 (100)\n"
@@ -56,6 +57,7 @@ typedef struct s_philo
 typedef struct s_table
 {
 	struct s_philo	*first;
+	// pthread
 	int				nb_philo;
 	int				nb_fork;
 	int				death_time;

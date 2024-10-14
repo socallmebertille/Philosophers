@@ -6,7 +6,7 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 16:47:40 by saberton          #+#    #+#             */
-/*   Updated: 2024/10/14 14:33:36 by saberton         ###   ########.fr       */
+/*   Updated: 2024/10/14 17:04:40 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,27 @@
 
 static void	eating(t_philo *philo)
 {
-	printf("timestamp_in_ms %d has taken a fork\n", philo->seat);
-	printf("timestamp_in_ms %d is eating\n", philo->seat);
 	philo->status = EATING;
+	printf("timestamp_in_ms %d has taken a fork\n", philo->seat);
+	printf(BLUE "timestamp_in_ms %d is eating\n" RESET, philo->seat);
 	philo->nb_meals += 1;
 }
 
 static void	sleeping(t_philo *philo)
 {
-	printf("timestamp_in_ms %d is sleeping\n", philo->seat);
 	philo->status = SLEEPING;
+	if (philo->nb_meals == 0)
+		return ;
+	printf("timestamp_in_ms %d is sleeping\n", philo->seat);
 	philo->nb_sleep += 1;
 }
 
 static void	thinking(t_philo *philo)
 {
-	printf("timestamp_in_ms %d is thinking\n", philo->seat);
 	philo->status = THINKING;
+	if (philo->nb_meals == 0)
+		return ;
+	printf("timestamp_in_ms %d is thinking\n", philo->seat);
 	philo->nb_think += 1;
 }
 

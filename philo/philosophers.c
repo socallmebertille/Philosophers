@@ -6,7 +6,7 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 21:08:19 by saberton          #+#    #+#             */
-/*   Updated: 2024/10/14 14:31:40 by saberton         ###   ########.fr       */
+/*   Updated: 2024/10/14 17:04:10 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int	main(int ac, char **av)
 {
 	t_table	*table;
 
-	if (ac < 4 || ac > 6)
+	if (ac < 5 || ac > 6)
 		return (printf(RED WRONG_ARGS RESET), printf(YELLOW EXEMPLE RESET),
 			printf(ORANGE FOR_WHAT RESET), EXIT_FAILURE);
 	table = malloc(sizeof(t_table));
@@ -63,10 +63,7 @@ int	main(int ac, char **av)
 	if (!init_table(av, table))
 		return (printf(RED "Error malloc.\n" RESET), exit_prog(table));
 	// print_philo(table);
-	if (table->nb_philo % 2 == 0)
-		printf("routine for even nb's philos");
-	else
-		routine(table);
+	routine(table);
 	exit_prog(table);
 	return (EXIT_SUCCESS);
 }

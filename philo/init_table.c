@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init_philo.c                                       :+:      :+:    :+:   */
+/*   init_table.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 17:46:09 by saberton          #+#    #+#             */
-/*   Updated: 2024/10/14 12:09:33 by saberton         ###   ########.fr       */
+/*   Updated: 2024/10/14 17:02:17 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,26 @@ static t_philo	*add_philo(t_table *table, int num)
 	return (new_philo);
 }
 
+static void	init_status(t_table *table, t_philo *philo)
+{
+	if (table->nb_philo % 2 == 0)
+	{
+		if (philo->seat % 2 == 0)
+			philo->status = SLEEPING;
+		else
+			philo->status = THINKING;
+	}
+	else
+	{
+		if ((philo->seat - 1) % 3 == 0)
+			philo->status = THINKING;
+		else if ((philo->seat - 2) % 3 == 0)
+			philo->status = SLEEPING;
+		else if ((philo->seat - 3) % 3 == 0)
+			philo->status = EATING;
+	}
+}
+
 static int	init_philo(t_table *table, int nb_philo)
 {
 	int		num;
@@ -37,12 +57,7 @@ static int	init_philo(t_table *table, int nb_philo)
 		new_philo = add_philo(table, num);
 		if (!new_philo)
 			return (printf(RED "Error malloc.\n" RESET), exit_prog(table));
-		if ((new_philo->seat - 1) % 3 == 0)
-			new_philo->status = THINKING;
-		else if ((new_philo->seat - 2) % 3 == 0)
-			new_philo->status = EATING;
-		else if ((new_philo->seat - 3) % 3 == 0)
-			new_philo->status = SLEEPING;
+		init_status(table, new_philo);
 		new_philo->left = cur;
 		cur->right = new_philo;
 		cur = cur->right;
