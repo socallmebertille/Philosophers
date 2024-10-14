@@ -6,7 +6,7 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 17:46:09 by saberton          #+#    #+#             */
-/*   Updated: 2024/10/14 17:20:59 by saberton         ###   ########.fr       */
+/*   Updated: 2024/10/14 17:49:11 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ static t_philo	*add_philo(t_table *table, int num)
 	new_philo = malloc(sizeof(t_philo));
 	if (!new_philo)
 		return (printf(RED "Error malloc.\n" RESET), exit_prog(table), NULL);
+	ft_bzero(new_philo, sizeof(t_philo));
 	new_philo->seat = num;
 	new_philo->fork = num;
 	return (new_philo);
@@ -78,6 +79,7 @@ int	init_table(char **av, t_table *table)
 	if (!philo)
 		return (printf(RED "Error malloc.\n" RESET), exit_prog(table));
 	table->first = philo;
+	ft_bzero(philo, sizeof(t_philo));
 	table->first->seat = 1;
 	table->first->fork = 1;
 	table->first->status = THINKING;
