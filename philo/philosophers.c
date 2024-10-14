@@ -6,7 +6,7 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 21:08:19 by saberton          #+#    #+#             */
-/*   Updated: 2024/10/11 16:55:36 by saberton         ###   ########.fr       */
+/*   Updated: 2024/10/14 14:31:40 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,22 +31,23 @@ int	exit_prog(t_table *table)
 	return (EXIT_FAILURE);
 }
 
-static void	print_philo(t_table *table)
-{
-	t_philo	*cur;
-	int		i;
+// static void	print_philo(t_table *table)
+// {
+// 	t_philo	*cur;
+// 	int		i;
 
-	cur = table->first;
-	i = 1;
-	while (i <= table->nb_philo)
-	{
-		printf("[left : %d ]", cur->left->seat);
-		printf("[seat : %d ]", cur->seat);
-		printf("[right] : %d]\n", cur->right->seat);
-		cur = cur->right;
-		i++;
-	}
-}
+// 	cur = table->first;
+// 	i = 1;
+// 	while (i <= table->nb_philo)
+// 	{
+// 		printf("[left : %d ]", cur->left->seat);
+// 		printf("[seat : %d ", cur->seat);
+// 		printf("take fork %d & %d] ", cur->left->fork, cur->fork);
+// 		printf("[right] : %d]\n", cur->right->seat);
+// 		cur = cur->right;
+// 		i++;
+// 	}
+// }
 
 int	main(int ac, char **av)
 {
@@ -61,8 +62,11 @@ int	main(int ac, char **av)
 	ft_bzero(table, sizeof(t_table));
 	if (!init_table(av, table))
 		return (printf(RED "Error malloc.\n" RESET), exit_prog(table));
-	print_philo(table);
-	routine(table);
+	// print_philo(table);
+	if (table->nb_philo % 2 == 0)
+		printf("routine for even nb's philos");
+	else
+		routine(table);
 	exit_prog(table);
 	return (EXIT_SUCCESS);
 }

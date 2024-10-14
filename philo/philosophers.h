@@ -6,7 +6,7 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 21:05:49 by saberton          #+#    #+#             */
-/*   Updated: 2024/10/11 16:55:59 by saberton         ###   ########.fr       */
+/*   Updated: 2024/10/14 11:56:03 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,15 +27,25 @@
 
 # define WRONG_ARGS "Wrong number of args\n"
 # define EXEMPLE "Write something like that : ./philo 5 800 200 100 (100)\n"
-# define FOR_WHAT \
-	"arg[1] for : number_of_philosopher\narg[2] for :  \
-time_to_die\narg[3] for :  time_to_eat\narg[4] for :  time_to_sleep\n(OPTIONNAL)\n\
+# define FOR_WHAT "arg[1] for : number_of_philosopher\narg[2] for : \
+time_to_die\narg[3] for : time_to_eat\narg[4] for : time_to_sleep\n(OPTIONNAL)\n\
 arg[5] for : number_of_times_each_philosopher_must_eat\n"
+
+typedef enum e_status
+{
+	EATING,
+	SLEEPING,
+	THINKING,
+	// TAKE_FIRST_FORK,
+	// TAKE_SECOND_FORK,
+	DIED,
+}		t_philo_status;
 
 typedef struct s_philo
 {
 	struct s_philo	*left;
 	struct s_philo	*right;
+	t_philo_status	status;
 	int				seat;
 	int				fork;
 	int				nb_meals;
