@@ -6,7 +6,7 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 21:05:49 by saberton          #+#    #+#             */
-/*   Updated: 2024/10/14 15:32:52 by saberton         ###   ########.fr       */
+/*   Updated: 2024/10/22 16:18:19 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,30 +44,33 @@ typedef enum e_status
 
 typedef struct s_philo
 {
-	struct s_philo	*left;
-	struct s_philo	*right;
-	t_philo_status	status;
 	int				seat;
 	int				fork;
 	int				nb_meals;
 	int				nb_sleep;
 	int				nb_think;
+	struct s_philo	*left;
+	struct s_philo	*right;
+	pthread_t		thread;
+	t_philo_status	status;
+	pthread_mutex_t	fork_mutex;
+	pthread_mutex_t	status_mutex;
 }					t_philo;
 
 typedef struct s_table
 {
-	struct s_philo	*first;
-	// pthread
 	int				nb_philo;
 	int				nb_fork;
 	int				death_time;
 	int				meal_time;
 	int				sleep_time;
 	int				meals;
+	struct s_philo	*first;
+	pthread_mutex_t	table_mutex;
 }					t_table;
 
 void				ft_bzero(void *s, size_t n);
-void				*routine(t_table *table);
+void				*routine(void *tab);
 int					exit_prog(t_table *table);
 int					init_table(char **av, t_table *table);
 long				ft_atol(const char *str);

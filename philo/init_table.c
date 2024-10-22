@@ -6,7 +6,7 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 17:46:09 by saberton          #+#    #+#             */
-/*   Updated: 2024/10/14 17:49:11 by saberton         ###   ########.fr       */
+/*   Updated: 2024/10/22 19:47:13 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static t_philo	*add_philo(t_table *table, int num)
 	return (new_philo);
 }
 
-static void	init_status(t_table *table, t_philo *philo)
+static int	status_and_thread(t_table *table, t_philo *philo)
 {
 	if (table->nb_philo % 2 == 0)
 	{
@@ -43,6 +43,9 @@ static void	init_status(t_table *table, t_philo *philo)
 		else if ((philo->seat - 3) % 3 == 0)
 			philo->status = EATING;
 	}
+	if (pthread_create(&philo->thread, NULL, &routine, table))
+		return (printf(RED "Error pthread.\n" RESET), 0);
+	return (1);
 }
 
 static int	init_philo(t_table *table, int nb_philo)
@@ -53,14 +56,19 @@ static int	init_philo(t_table *table, int nb_philo)
 
 	if (nb_philo == 1)
 		return (1);
-	cur = table->first;
-	num = 2;
+	num = 1;
 	while (num <= nb_philo)
 	{
 		new_philo = add_philo(table, num);
 		if (!new_philo)
 			return (printf(RED "Error malloc.\n" RESET), exit_prog(table));
-		init_status(table, new_philo);
+		if (num == 1)
+		{
+			table->first = new_philo;
+			cur = table->first;
+		}
+		if (!status_and_thread(table, new_philo))
+			return (0);
 		new_philo->left = cur;
 		cur->right = new_philo;
 		cur = cur->right;
@@ -73,19 +81,9 @@ static int	init_philo(t_table *table, int nb_philo)
 
 int	init_table(char **av, t_table *table)
 {
-	t_philo	*philo;
-
-	philo = malloc(sizeof(t_philo));
-	if (!philo)
-		return (printf(RED "Error malloc.\n" RESET), exit_prog(table));
-	table->first = philo;
-	ft_bzero(philo, sizeof(t_philo));
-	table->first->seat = 1;
-	table->first->fork = 1;
-	table->first->status = THINKING;
 	table->nb_philo = ft_atol(av[1]);
 	if (table->nb_philo <= 0)
-		return (free(philo), 0);
+		return (0);
 	table->nb_fork = ft_atol(av[1]);
 	table->death_time = ft_atol(av[2]);
 	table->meal_time = ft_atol(av[3]);

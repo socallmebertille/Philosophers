@@ -6,7 +6,7 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 21:08:19 by saberton          #+#    #+#             */
-/*   Updated: 2024/10/14 17:19:53 by saberton         ###   ########.fr       */
+/*   Updated: 2024/10/22 19:55:07 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,21 @@ int	exit_prog(t_table *table)
 		printf(RED "Number of philos must be positive.\n" RESET);
 	if (table->first)
 		tmp = table->first;
-	while (table->nb_philo-- > 0)
+	while (table->nb_philo > 0)
 	{
-		next = tmp->right;
-		free(tmp);
-		tmp = next;
+		if (tmp->thread)
+		{
+			if (pthread_join(tmp->thread, NULL))
+				printf(RED "Error joining thread for philosopher %d\n" RESET, tmp->seat);
+			else
+			{
+				next = tmp->right;
+				free(tmp);
+				tmp = next;
+			}
+		}
+		if (table && table->nb_philo)
+			table->nb_philo -= 1;
 	}
 	if (table)
 		free(table);
@@ -64,8 +74,8 @@ int	main(int ac, char **av)
 	ft_bzero(table, sizeof(t_table));
 	if (!init_table(av, table))
 		return (exit_prog(table));
-	// print_philo(table);
-	routine(table);
-	exit_prog(table);
+	// routine(table);
+	if (table->nb_philo > 0)
+		exit_prog(table);
 	return (EXIT_SUCCESS);
 }
