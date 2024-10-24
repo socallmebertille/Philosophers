@@ -6,7 +6,7 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 21:05:49 by saberton          #+#    #+#             */
-/*   Updated: 2024/10/22 16:18:19 by saberton         ###   ########.fr       */
+/*   Updated: 2024/10/24 14:48:41 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include <sys/time.h>
 
 # define RESET "\e[0m"
 # define RED "\e[1;91m"
@@ -51,6 +52,7 @@ typedef struct s_philo
 	int				nb_think;
 	struct s_philo	*left;
 	struct s_philo	*right;
+	struct s_table	*table;
 	pthread_t		thread;
 	t_philo_status	status;
 	pthread_mutex_t	fork_mutex;
@@ -71,8 +73,9 @@ typedef struct s_table
 
 void				ft_bzero(void *s, size_t n);
 void				*routine(void *tab);
-int					exit_prog(t_table *table);
+void				exit_prog(t_table *table);
 int					init_table(char **av, t_table *table);
+int					everybody_has_eaten(t_table *table);
 long				ft_atol(const char *str);
 
 #endif

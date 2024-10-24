@@ -6,7 +6,7 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 17:46:09 by saberton          #+#    #+#             */
-/*   Updated: 2024/10/22 19:47:13 by saberton         ###   ########.fr       */
+/*   Updated: 2024/10/24 14:49:34 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,11 @@ static t_philo	*add_philo(t_table *table, int num)
 
 	new_philo = malloc(sizeof(t_philo));
 	if (!new_philo)
-		return (printf(RED "Error malloc.\n" RESET), exit_prog(table), NULL);
+		return (printf(RED "Error malloc.\n" RESET), NULL);
 	ft_bzero(new_philo, sizeof(t_philo));
 	new_philo->seat = num;
 	new_philo->fork = num;
+	new_philo->table = table;
 	return (new_philo);
 }
 
@@ -43,8 +44,10 @@ static int	status_and_thread(t_table *table, t_philo *philo)
 		else if ((philo->seat - 3) % 3 == 0)
 			philo->status = EATING;
 	}
-	if (pthread_create(&philo->thread, NULL, &routine, table))
+	if (pthread_create(&philo->thread, NULL, &routine, philo))
 		return (printf(RED "Error pthread.\n" RESET), 0);
+	pthread_mutex_init(&(philo->status_mutex), NULL);
+	pthread_mutex_init(&(philo->fork_mutex), NULL);
 	return (1);
 }
 
@@ -54,14 +57,12 @@ static int	init_philo(t_table *table, int nb_philo)
 	t_philo	*new_philo;
 	t_philo	*cur;
 
-	if (nb_philo == 1)
-		return (1);
 	num = 1;
 	while (num <= nb_philo)
 	{
 		new_philo = add_philo(table, num);
 		if (!new_philo)
-			return (printf(RED "Error malloc.\n" RESET), exit_prog(table));
+			return (printf(RED "Error malloc.\n" RESET), 0);
 		if (num == 1)
 		{
 			table->first = new_philo;
@@ -76,6 +77,14 @@ static int	init_philo(t_table *table, int nb_philo)
 	}
 	table->first->left = new_philo;
 	new_philo->right = table->first;
+	num = 1;
+	cur = table->first;
+	while (num < nb_philo)
+	{
+		if (pthread_join(cur->thread, NULL) && table->nb_philo > 1)
+			printf(RED "Error joining thread for %d\n" RESET, cur->seat);
+		num++;
+	}
 	return (1);
 }
 
@@ -83,7 +92,8 @@ int	init_table(char **av, t_table *table)
 {
 	table->nb_philo = ft_atol(av[1]);
 	if (table->nb_philo <= 0)
-		return (0);
+		return (free(table),
+			printf(RED "Number of philos must be positive.\n" RESET), 0);
 	table->nb_fork = ft_atol(av[1]);
 	table->death_time = ft_atol(av[2]);
 	table->meal_time = ft_atol(av[3]);
@@ -92,7 +102,8 @@ int	init_table(char **av, t_table *table)
 		table->meals = ft_atol(av[5]);
 	else
 		table->meals = -1;
+	pthread_mutex_init(&(table->table_mutex), NULL);
 	if (!init_philo(table, table->nb_philo))
-		return (printf(RED "Init philo failed.\n" RESET), exit_prog(table));
+		return (printf(RED "Init philo failed.\n" RESET), 0);
 	return (1);
 }
