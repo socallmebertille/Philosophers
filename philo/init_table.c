@@ -6,7 +6,7 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 17:46:09 by saberton          #+#    #+#             */
-/*   Updated: 2024/10/26 21:46:39 by saberton         ###   ########.fr       */
+/*   Updated: 2024/10/26 22:49:55 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,21 +35,21 @@ static int	status_philo(t_table *table, t_philo *philo)
 {
 	if (table->nb_philo % 2 == 0)
 	{
-		if (philo->seat % 2 == 0)
-			philo->status = SLEEPING;
-		else
-			philo->status = THINKING;
+		if ((philo->seat - 1) % 2 == 0)
+			return (THINKING);
+		else if ((philo->seat - 1) % 2 != 0)
+			return (SLEEPING);
 	}
-	else
+	else if (table->nb_philo % 2 != 0)
 	{
 		if ((philo->seat - 1) % 3 == 0)
-			philo->status = THINKING;
+			return (THINKING);
 		else if ((philo->seat - 2) % 3 == 0)
-			philo->status = SLEEPING;
+			return (SLEEPING);
 		else if ((philo->seat - 3) % 3 == 0)
-			philo->status = EATING;
+			return (EATING);
 	}
-	return (1);
+	return (-1);
 }
 
 static int	create_thread(t_table *table, int nb_philo)
@@ -83,7 +83,8 @@ static int	init_philo(t_table *table, int nb_philo)
 			return (printf(RED "Error malloc.\n" RESET), 0);
 		if (num == 1)
 			cur = table->first;
-		if (!status_philo(table, new_philo))
+		new_philo->status = status_philo(table, new_philo);
+		if ((int)new_philo->status == -1)
 			return (0);
 		new_philo->left = cur;
 		cur->right = new_philo;

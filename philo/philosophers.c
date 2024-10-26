@@ -6,7 +6,7 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 21:08:19 by saberton          #+#    #+#             */
-/*   Updated: 2024/10/26 21:08:07 by saberton         ###   ########.fr       */
+/*   Updated: 2024/10/26 22:52:14 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ void	exit_prog(t_table *table)
 // 	i = 1;
 // 	while (i <= table->nb_philo)
 // 	{
+// 		printf("status : %d -> ", cur->status);
 // 		printf("[left : %d ]", cur->left->seat);
 // 		printf("[seat : %d ", cur->seat);
 // 		printf("take fork %d & %d] ", cur->left->fork, cur->fork);
@@ -95,6 +96,7 @@ int	main(int ac, char **av)
 	if (!init_table(av, table))
 		return (printf(RED "Issue in init.\n" RESET), exit_prog(table),
 			EXIT_FAILURE);
+	// print_philo(table);
 	exit_prog(table);
 	return (EXIT_SUCCESS);
 }
