@@ -6,7 +6,7 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 21:05:49 by saberton          #+#    #+#             */
-/*   Updated: 2024/10/24 14:48:41 by saberton         ###   ########.fr       */
+/*   Updated: 2024/10/26 21:39:06 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,6 @@ typedef enum e_status
 	EATING,
 	SLEEPING,
 	THINKING,
-	// TAKE_FIRST_FORK,
-	// TAKE_SECOND_FORK,
 	DIED,
 }		t_philo_status;
 
@@ -56,6 +54,7 @@ typedef struct s_philo
 	pthread_t		thread;
 	t_philo_status	status;
 	pthread_mutex_t	fork_mutex;
+	pthread_mutex_t	nb_meals_mutex;
 	pthread_mutex_t	status_mutex;
 }					t_philo;
 
@@ -69,13 +68,16 @@ typedef struct s_table
 	int				meals;
 	struct s_philo	*first;
 	pthread_mutex_t	table_mutex;
+	pthread_mutex_t	print_mutex;
 }					t_table;
 
 void				ft_bzero(void *s, size_t n);
+void				print(char *str, t_philo *philo);
 void				*routine(void *tab);
 void				exit_prog(t_table *table);
 int					init_table(char **av, t_table *table);
 int					everybody_has_eaten(t_table *table);
+int					has_anyone_died(t_table *table);
 long				ft_atol(const char *str);
 
 #endif

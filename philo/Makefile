@@ -3,7 +3,7 @@ NAME = philo
 CC = cc
 C_FLAGS = -Wall -Wextra -Werror -pthread -g3
 
-SRCS =  utils.c init_table.c routine.c philosophers.c
+SRCS =  utils.c init_table.c utils_routine.c routine.c philosophers.c
 OBJ_DIR = objets
 OBJS = $(patsubst %.c,$(OBJ_DIR)/%.o,$(SRCS))
 

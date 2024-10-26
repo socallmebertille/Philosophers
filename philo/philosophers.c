@@ -6,30 +6,53 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 21:08:19 by saberton          #+#    #+#             */
-/*   Updated: 2024/10/24 14:50:46 by saberton         ###   ########.fr       */
+/*   Updated: 2024/10/26 21:08:07 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-void	exit_prog(t_table *table)
+static void	loop_free(t_table *table)
 {
+	int		num;
 	t_philo	*cur;
 	t_philo	*next;
 
-	if (table->nb_philo <= 0)
-		return ;
-	if (table->first)
-		cur = table->first;
-	while (table->nb_philo > 0)
+	num = 1;
+	cur = table->first;
+	while (num <= table->nb_philo)
 	{
 		next = cur->right;
 		pthread_mutex_destroy(&cur->fork_mutex);
 		pthread_mutex_destroy(&cur->status_mutex);
+		pthread_detach(cur->thread);
 		free(cur);
 		cur = next;
-		table->nb_philo -= 1;
+		num++;
 	}
+	return ;
+}
+
+void	exit_prog(t_table *table)
+{
+	t_philo	*cur;
+	int		num;
+
+	if (table->nb_philo <= 0)
+		return (free(table));
+	pthread_mutex_lock(&table->table_mutex);
+	num = 1;
+	cur = table->first;
+	while (num <= table->nb_philo)
+	{
+		pthread_join(cur->thread, NULL);
+		cur = cur->right;
+		num++;
+	}
+	if (everybody_has_eaten(table))
+		printf(GREEN "Everybody has eaten, congrats !!!\n" RESET);
+	loop_free(table);
+	pthread_mutex_unlock(&table->table_mutex);
 	pthread_mutex_destroy(&table->table_mutex);
 	if (table)
 		free(table);
@@ -70,12 +93,8 @@ int	main(int ac, char **av)
 			EXIT_FAILURE);
 	ft_bzero(table, sizeof(t_table));
 	if (!init_table(av, table))
-		return (EXIT_FAILURE);
-	// print_philo(table);
-	if (everybody_has_eaten(table))
-	{
-		printf(GREEN "Everybody has eaten, congrats !!!\n" RESET);
-		exit_prog(table);
-	}
+		return (printf(RED "Issue in init.\n" RESET), exit_prog(table),
+			EXIT_FAILURE);
+	exit_prog(table);
 	return (EXIT_SUCCESS);
 }
