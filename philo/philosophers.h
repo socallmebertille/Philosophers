@@ -6,7 +6,7 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 21:05:49 by saberton          #+#    #+#             */
-/*   Updated: 2024/10/26 23:00:40 by saberton         ###   ########.fr       */
+/*   Updated: 2024/10/28 18:55:32 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,8 @@ typedef struct s_philo
 	int				seat;
 	int				fork;
 	int				nb_meals;
-	int				nb_sleep;
-	int				nb_think;
-	int				last_meal;
+	long			last_meal;
+	long			death_time;
 	struct s_philo	*left;
 	struct s_philo	*right;
 	struct s_table	*table;
@@ -57,17 +56,17 @@ typedef struct s_philo
 	pthread_mutex_t	fork_mutex;
 	pthread_mutex_t	nb_meals_mutex;
 	pthread_mutex_t	status_mutex;
+	pthread_mutex_t	last_meal_mutex;
 }					t_philo;
 
 typedef struct s_table
 {
 	int				nb_philo;
-	int				nb_fork;
-	int				start;
-	int				death_time;
-	int				meal_time;
-	int				sleep_time;
-	int				meals;
+	long			start;
+	long			death_time;
+	long			meal_time;
+	long			sleep_time;
+	long			meals;
 	struct s_philo	*first;
 	pthread_mutex_t	table_mutex;
 	pthread_mutex_t	print_mutex;
@@ -77,11 +76,12 @@ void				ft_bzero(void *s, size_t n);
 void				print(int timestamp_in_ms, char *str, t_philo *philo);
 void				*routine(void *tab);
 void				exit_prog(t_table *table);
+int					check_args(char *str, int nb);
 int					init_table(char **av, t_table *table);
 int					everybody_has_eaten(t_table *table);
 int					has_anyone_died(t_table *table);
+int					who_died(t_table *table);
 int					ft_usleep(size_t milliseconds, t_table *table);
-long				ft_atol(const char *str);
 long long			timestamp(void);
 
 #endif

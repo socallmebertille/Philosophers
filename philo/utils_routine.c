@@ -6,7 +6,7 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/26 16:54:40 by saberton          #+#    #+#             */
-/*   Updated: 2024/10/26 23:01:25 by saberton         ###   ########.fr       */
+/*   Updated: 2024/10/28 17:52:16 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,31 @@ int	has_anyone_died(t_table *table)
 		pthread_mutex_lock(&philo->status_mutex);
 		if (philo->status == DIED)
 		{
-			print(timestamp() - philo->table->start, RED "died" RESET, philo);
+			pthread_mutex_unlock(&philo->status_mutex);
+			return (1);
+		}
+		pthread_mutex_unlock(&philo->status_mutex);
+		philo = philo->right;
+		nb++;
+	}
+	return (0);
+}
+
+int	who_died(t_table *table)
+{
+	t_philo	*philo;
+	int		nb;
+
+	if (!table)
+		return (1);
+	philo = table->first;
+	nb = 1;
+	while (nb <= table->nb_philo)
+	{
+		pthread_mutex_lock(&philo->status_mutex);
+		if (philo->status == DIED)
+		{
+			print(philo->death_time, RED "died" RESET, philo);
 			pthread_mutex_unlock(&philo->status_mutex);
 			return (1);
 		}

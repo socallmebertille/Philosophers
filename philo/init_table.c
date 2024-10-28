@@ -6,7 +6,7 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 17:46:09 by saberton          #+#    #+#             */
-/*   Updated: 2024/10/26 22:49:55 by saberton         ###   ########.fr       */
+/*   Updated: 2024/10/28 18:55:55 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,10 @@ static t_philo	*add_philo(t_table *table, int num)
 	new_philo = malloc(sizeof(t_philo));
 	if (!new_philo)
 		return (printf(RED "Error malloc.\n" RESET), NULL);
-	pthread_mutex_init(&(new_philo->status_mutex), NULL);
 	pthread_mutex_init(&(new_philo->fork_mutex), NULL);
 	pthread_mutex_init(&(new_philo->nb_meals_mutex), NULL);
+	pthread_mutex_init(&(new_philo->status_mutex), NULL);
+	pthread_mutex_init(&(new_philo->last_meal_mutex), NULL);
 	ft_bzero(new_philo, sizeof(t_philo));
 	new_philo->seat = num;
 	new_philo->fork = num;
@@ -58,6 +59,8 @@ static int	create_thread(t_table *table, int nb_philo)
 	t_philo	*cur;
 
 	num = 1;
+	if (!table->start)
+		table->start = timestamp();
 	cur = table->first;
 	while (num <= nb_philo)
 	{
@@ -65,6 +68,14 @@ static int	create_thread(t_table *table, int nb_philo)
 			return (printf(RED "Error pthread.\n" RESET), 0);
 		num++;
 		cur = cur->right;
+	}
+	num = 1;
+	cur = table->first;
+	while (num <= table->nb_philo && cur)
+	{
+		pthread_join(cur->thread, NULL);
+		cur = cur->right;
+		num++;
 	}
 	return (1);
 }
@@ -99,15 +110,22 @@ static int	init_philo(t_table *table, int nb_philo)
 
 int	init_table(char **av, t_table *table)
 {
-	table->nb_philo = ft_atol(av[1]);
-	if (table->nb_philo <= 0)
+	table->nb_philo = check_args(av[1], 1);
+	if (table->nb_philo == 0)
 		return (printf(RED "Number of philos must be positive. -> " RESET), 0);
-	table->nb_fork = ft_atol(av[1]);
-	table->death_time = ft_atol(av[2]);
-	table->meal_time = ft_atol(av[3]);
-	table->sleep_time = ft_atol(av[4]);
+	table->death_time = check_args(av[2], 2);
+	table->meal_time = check_args(av[3], 3);
+	table->sleep_time = check_args(av[4], 4);
+	if (table->death_time == -1 || table->meal_time == -1
+		|| table->sleep_time == -1)
+		return (printf(RED "Issue in init.\n" RESET), free(table), exit(0), 0);
 	if (av[5])
-		table->meals = ft_atol(av[5]);
+	{
+		table->meals = check_args(av[5], 5);
+		if (table->meals == -1)
+			return (printf(RED "Issue in init.\n" RESET), free(table), exit(0),
+				0);
+	}
 	else
 		table->meals = -1;
 	pthread_mutex_init(&(table->table_mutex), NULL);
