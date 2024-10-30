@@ -6,7 +6,7 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 17:46:09 by saberton          #+#    #+#             */
-/*   Updated: 2024/10/29 17:38:24 by saberton         ###   ########.fr       */
+/*   Updated: 2024/10/30 17:55:15 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ static t_philo	*add_philo(t_table *table, int num)
 	pthread_mutex_init(&(new_philo->last_meal_mutex), NULL);
 	ft_bzero(new_philo, sizeof(t_philo));
 	new_philo->seat = num;
-	new_philo->fork = num;
 	new_philo->table = table;
 	if (num == 1)
 		table->first = new_philo;
@@ -69,14 +68,14 @@ static int	create_thread(t_table *table, int nb_philo)
 		num++;
 		philo = philo->right;
 	}
-	// num = 1;
-	// philo = table->first;
-	// while (num <= table->nb_philo && philo)
-	// {
-	// 	pthread_join(philo->thread, NULL);
-	// 	philo = philo->right;
-	// 	num++;
-	// }
+	num = 1;
+	philo = table->first;
+	while (num <= table->nb_philo && philo)
+	{
+		pthread_join(philo->thread, NULL);
+		philo = philo->right;
+		num++;
+	}
 	return (1);
 }
 
@@ -111,7 +110,7 @@ static int	init_philo(t_table *table, int nb_philo)
 int	init_table(char **av, t_table *table)
 {
 	table->nb_philo = check_args(av[1], 1);
-	if (table->nb_philo == 0)
+	if (table->nb_philo <= 0)
 		return (printf(RED "Number of philos must be positive. -> " RESET), 0);
 	table->death_time = check_args(av[2], 2);
 	table->meal_time = check_args(av[3], 3);

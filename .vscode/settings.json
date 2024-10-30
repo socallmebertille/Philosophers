@@ -1,5 +1,6 @@
 {
     "files.associations": {
         "philosophers.h": "c"
-    }
+    },
+    "workbench.editor.defaultBinaryEditor": "default"
 }

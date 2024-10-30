@@ -6,27 +6,27 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/26 21:52:50 by saberton          #+#    #+#             */
-/*   Updated: 2024/10/29 17:23:46 by saberton         ###   ########.fr       */
+/*   Updated: 2024/10/30 17:30:43 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-static int	is_dead(t_table *table, long actual)
+static int	is_dead(t_table *table)
 {
 	t_philo	*philo;
 	int		nb;
 
 	if (!table)
 		return (0);
-	if (table->meals == -1 || table->nb_philo == 1)
+	if (table->nb_philo == 1)
 		return (0);
 	philo = table->first;
 	nb = 1;
 	while (nb <= table->nb_philo)
 	{
 		pthread_mutex_lock(&philo->status_mutex);
-		if (actual - philo->last_meal > table->death_time)// && philo->nb_meals)
+		if (philo->last_meal > table->death_time * philo->nb_meals)
 		{
 			philo->status = DIED;
 			pthread_mutex_unlock(&philo->status_mutex);
@@ -48,14 +48,14 @@ long long	timestamp(void)
 	return ((tv.tv_sec * 1000LL) + (tv.tv_usec / 1000));
 }
 
-int	ft_usleep(size_t milliseconds, t_table *table)
+int	ft_usleep(size_t milliseconds, t_philo *philo)
 {
 	size_t	start;
 
 	start = timestamp();
 	while ((timestamp() - start) < milliseconds)
 	{
-		if (is_dead(table, timestamp() - start))
+		if (is_dead(philo->table))
 			break ;
 		usleep(500);
 	}

@@ -6,7 +6,7 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 17:34:17 by saberton          #+#    #+#             */
-/*   Updated: 2024/10/29 14:13:18 by saberton         ###   ########.fr       */
+/*   Updated: 2024/10/30 18:16:35 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,5 +70,11 @@ int	check_args(char *str, int nb)
 		return (printf(RED "Argument %d must be positive. -> " RESET, nb), -1);
 	if (!ft_isdigit(str))
 		return (printf(RED "Argument %d must be a number. -> " RESET, nb), -1);
+	if (nb == 1 && ft_atol(str) > 200)
+		return (printf(RED "Argument %d must be less than 200. -> " RESET, nb),
+			-1);
+	if (nb != 1 && ft_atol(str) < 60)
+		return (printf(RED "Argument %d must be more than 60. -> " RESET, nb),
+			-1);
 	return (ft_atol(str));
 }

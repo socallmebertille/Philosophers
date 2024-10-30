@@ -6,7 +6,7 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 21:05:49 by saberton          #+#    #+#             */
-/*   Updated: 2024/10/28 18:55:32 by saberton         ###   ########.fr       */
+/*   Updated: 2024/10/30 17:55:19 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ typedef enum e_status
 typedef struct s_philo
 {
 	int				seat;
-	int				fork;
 	int				nb_meals;
 	long			last_meal;
 	long			death_time;
@@ -81,7 +80,7 @@ int					init_table(char **av, t_table *table);
 int					everybody_has_eaten(t_table *table);
 int					has_anyone_died(t_table *table);
 int					who_died(t_table *table);
-int					ft_usleep(size_t milliseconds, t_table *table);
+int					ft_usleep(size_t milliseconds, t_philo *philo);
 long long			timestamp(void);
 
 #endif
