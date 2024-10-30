@@ -6,7 +6,7 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 21:08:19 by saberton          #+#    #+#             */
-/*   Updated: 2024/10/28 17:52:33 by saberton         ###   ########.fr       */
+/*   Updated: 2024/10/29 17:38:21 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,48 @@ static void	loop_free(t_table *table)
 	cur = table->first;
 	while (num <= table->nb_philo)
 	{
+		pthread_join(cur->thread, NULL);
+		cur = cur->right;
+		num++;
+	}
+	num = 1;
+	cur = table->first;
+	while (num <= table->nb_philo)
+	{
 		next = cur->right;
 		pthread_mutex_destroy(&cur->fork_mutex);
 		pthread_mutex_destroy(&cur->nb_meals_mutex);
 		pthread_mutex_destroy(&cur->status_mutex);
+		free(cur);
+		cur = next;
+		num++;
+	}
+	return ;
+}
+
+static void	loop_free_and_detach(t_table *table)
+{
+	int		num;
+	t_philo	*cur;
+	t_philo	*next;
+
+	num = 1;
+	cur = table->first;
+	while (num <= table->nb_philo)
+	{
+		pthread_detach(cur->thread);
+		cur = cur->right;
+		num++;
+	}
+	num = 1;
+	cur = table->first;
+	while (num <= table->nb_philo)
+	{
+		next = cur->right;
+		pthread_mutex_destroy(&cur->fork_mutex);
+		pthread_mutex_destroy(&cur->nb_meals_mutex);
+		pthread_mutex_destroy(&cur->status_mutex);
+		// pthread_detach(cur->thread);
 		free(cur);
 		cur = next;
 		num++;
@@ -41,8 +79,12 @@ void	exit_prog(t_table *table)
 	if (everybody_has_eaten(table))
 		printf(GREEN "Everybody has eaten, congrats !!!\n" RESET);
 	if (has_anyone_died(table))
+	{
 		who_died(table);
-	loop_free(table);
+		loop_free_and_detach(table);
+	}
+	else
+		loop_free(table);
 	pthread_mutex_unlock(&table->table_mutex);
 	pthread_mutex_destroy(&table->table_mutex);
 	if (table)

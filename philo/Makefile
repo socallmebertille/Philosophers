@@ -1,7 +1,7 @@
 NAME = philo
 
 CC = cc
-C_FLAGS = -Wall -Wextra -Werror -pthread -g3
+C_FLAGS = -Wall -Wextra -Werror -pthread
 
 SRCS =  check_args.c init_table.c utils_routine.c routine.c time.c philosophers.c
 OBJ_DIR = objets

@@ -6,7 +6,7 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 17:46:09 by saberton          #+#    #+#             */
-/*   Updated: 2024/10/28 18:55:55 by saberton         ###   ########.fr       */
+/*   Updated: 2024/10/29 17:38:24 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,27 +56,27 @@ static int	status_philo(t_table *table, t_philo *philo)
 static int	create_thread(t_table *table, int nb_philo)
 {
 	int		num;
-	t_philo	*cur;
+	t_philo	*philo;
 
 	num = 1;
 	if (!table->start)
 		table->start = timestamp();
-	cur = table->first;
+	philo = table->first;
 	while (num <= nb_philo)
 	{
-		if (pthread_create(&cur->thread, NULL, &routine, cur))
+		if (pthread_create(&philo->thread, NULL, &routine, philo))
 			return (printf(RED "Error pthread.\n" RESET), 0);
 		num++;
-		cur = cur->right;
+		philo = philo->right;
 	}
-	num = 1;
-	cur = table->first;
-	while (num <= table->nb_philo && cur)
-	{
-		pthread_join(cur->thread, NULL);
-		cur = cur->right;
-		num++;
-	}
+	// num = 1;
+	// philo = table->first;
+	// while (num <= table->nb_philo && philo)
+	// {
+	// 	pthread_join(philo->thread, NULL);
+	// 	philo = philo->right;
+	// 	num++;
+	// }
 	return (1);
 }
 

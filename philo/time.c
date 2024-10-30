@@ -6,7 +6,7 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/26 21:52:50 by saberton          #+#    #+#             */
-/*   Updated: 2024/10/28 17:52:23 by saberton         ###   ########.fr       */
+/*   Updated: 2024/10/29 17:23:46 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static int	is_dead(t_table *table, long actual)
 	while (nb <= table->nb_philo)
 	{
 		pthread_mutex_lock(&philo->status_mutex);
-		if (actual - philo->last_meal > table->death_time && philo->nb_meals)
+		if (actual - philo->last_meal > table->death_time)// && philo->nb_meals)
 		{
 			philo->status = DIED;
 			pthread_mutex_unlock(&philo->status_mutex);
@@ -42,7 +42,7 @@ static int	is_dead(t_table *table, long actual)
 
 long long	timestamp(void)
 {
-	struct	timeval tv;
+	struct timeval	tv;
 
 	gettimeofday(&tv, NULL);
 	return ((tv.tv_sec * 1000LL) + (tv.tv_usec / 1000));
