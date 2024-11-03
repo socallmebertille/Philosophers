@@ -6,7 +6,7 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/26 21:52:50 by saberton          #+#    #+#             */
-/*   Updated: 2024/11/03 05:18:20 by saberton         ###   ########.fr       */
+/*   Updated: 2024/11/03 06:03:00 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ int	is_dead(t_philo *philo)
 	{
 		pthread_mutex_lock(&philo->status_mutex);
 		philo->status = DIED;
-		print(timestamp() - philo->table->start, BRED "died" RESET, philo);
 		pthread_mutex_unlock(&philo->status_mutex);
 		pthread_mutex_lock(&table->table_mutex);
 		philo->table->isdead = 1;

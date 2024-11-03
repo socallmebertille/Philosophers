@@ -6,7 +6,7 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 21:08:19 by saberton          #+#    #+#             */
-/*   Updated: 2024/11/02 20:35:47 by saberton         ###   ########.fr       */
+/*   Updated: 2024/11/03 06:03:55 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,8 @@ static int	everybody_has_eaten(t_table *table)
 	nb = 1;
 	while (nb <= table->nb_philo)
 	{
-		pthread_mutex_lock(&philo->nb_meals_mutex);
 		if (philo->nb_meals < table->meals)
-		{
-			pthread_mutex_unlock(&philo->nb_meals_mutex);
 			return (0);
-		}
-		pthread_mutex_unlock(&philo->nb_meals_mutex);
 		philo = philo->right;
 		nb++;
 	}
@@ -40,10 +35,28 @@ static int	everybody_has_eaten(t_table *table)
 
 static void	check_death(t_table *table)
 {
+	t_philo	*philo;
+	int		nb;
+
+	philo = table->first;
+	nb = 1;
 	while (1)
 	{
 		if (checkvarisdead(table))
+		{
+			while (nb <= table->nb_philo)
+			{
+				if (philo->status == DIED)
+				{
+					print(timestamp() - philo->table->start, BRED "died" RESET,
+						philo);
+					break ;
+				}
+				philo = philo->right;
+				nb++;
+			}
 			break ;
+		}
 		if (everybody_has_eaten(table))
 			break ;
 	}

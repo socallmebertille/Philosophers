@@ -6,7 +6,7 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 16:47:40 by saberton          #+#    #+#             */
-/*   Updated: 2024/11/03 05:23:18 by saberton         ###   ########.fr       */
+/*   Updated: 2024/11/03 06:00:11 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ static void	eating(t_philo *philo, t_table *table)
 	{
 		philo->status = DIED;
 		ft_usleep(table->death_time, philo);
-		print(timestamp() - philo->table->start, BRED "died" RESET, philo);
 		philo->table->isdead = 1;
 		pthread_mutex_unlock(&philo->fork_mutex);
 		return ;
