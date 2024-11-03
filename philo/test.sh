@@ -74,6 +74,13 @@ valgrind --leak-check=full ./philo 4 310 200 100
 echo "${BLU_BG}valgrind --tool=helgrind --history-level=approx ./philo 4 310 200 100${END}"
 valgrind --tool=helgrind --history-level=approx ./philo 4 310 200 100
 echo "\n"
+echo "${YEL_BG}./philo 7 310 200 100${END}"
+./philo 7 310 200 100
+echo "${BLU_BG}valgrind --leak-check=full ./philo 7 310 200 100${END}"
+valgrind --leak-check=full ./philo 7 310 200 100
+echo "${BLU_BG}valgrind --tool=helgrind --history-level=approx ./philo 7 310 200 100${END}"
+valgrind --tool=helgrind --history-level=approx ./philo 7 310 200 100
+echo "\n"
 
 # Routine terminate with no death and 7 meals
 echo "${GREEN_BG}<------------------- No philo should die for 7 meals-------------------->${END}"
