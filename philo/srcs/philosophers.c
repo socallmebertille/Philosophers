@@ -6,11 +6,48 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 21:08:19 by saberton          #+#    #+#             */
-/*   Updated: 2024/10/30 17:18:18 by saberton         ###   ########.fr       */
+/*   Updated: 2024/11/02 20:35:47 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
+
+static int	everybody_has_eaten(t_table *table)
+{
+	t_philo	*philo;
+	int		nb;
+
+	if (!table)
+		return (1);
+	if (table->meals == -1 || table->nb_philo == 1)
+		return (0);
+	philo = table->first;
+	nb = 1;
+	while (nb <= table->nb_philo)
+	{
+		pthread_mutex_lock(&philo->nb_meals_mutex);
+		if (philo->nb_meals < table->meals)
+		{
+			pthread_mutex_unlock(&philo->nb_meals_mutex);
+			return (0);
+		}
+		pthread_mutex_unlock(&philo->nb_meals_mutex);
+		philo = philo->right;
+		nb++;
+	}
+	return (1);
+}
+
+static void	check_death(t_table *table)
+{
+	while (1)
+	{
+		if (checkvarisdead(table))
+			break ;
+		if (everybody_has_eaten(table))
+			break ;
+	}
+}
 
 static void	loop_free(t_table *table)
 {
@@ -37,11 +74,8 @@ void	exit_prog(t_table *table)
 {
 	if (table->nb_philo <= 0)
 		return (free(table));
+	check_death(table);
 	pthread_mutex_lock(&table->table_mutex);
-	if (everybody_has_eaten(table))
-		printf(GREEN "Everybody has eaten, congrats !!!\n" RESET);
-	if (has_anyone_died(table))
-		who_died(table);
 	loop_free(table);
 	pthread_mutex_unlock(&table->table_mutex);
 	pthread_mutex_destroy(&table->table_mutex);

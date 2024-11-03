@@ -6,11 +6,11 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 16:47:40 by saberton          #+#    #+#             */
-/*   Updated: 2024/10/30 17:41:53 by saberton         ###   ########.fr       */
+/*   Updated: 2024/11/03 05:23:18 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philosophers.h"	
+#include "philosophers.h"
 
 static void	take_forks(t_philo *philo)
 {
@@ -23,15 +23,15 @@ static void	take_forks(t_philo *philo)
 	if (philo->seat % 2 == 0)
 	{
 		pthread_mutex_lock(&philo->left->fork_mutex);
-		print(timestamp() - philo->table->start, "has taken a fork", philo);
 		pthread_mutex_lock(&philo->fork_mutex);
+		print(timestamp() - philo->table->start, "has taken a fork", philo);
 		print(timestamp() - philo->table->start, "has taken a fork", philo);
 	}
 	else
 	{
 		pthread_mutex_lock(&philo->fork_mutex);
-		print(timestamp() - philo->table->start, "has taken a fork", philo);
 		pthread_mutex_lock(&philo->left->fork_mutex);
+		print(timestamp() - philo->table->start, "has taken a fork", philo);
 		print(timestamp() - philo->table->start, "has taken a fork", philo);
 	}
 }
@@ -44,12 +44,15 @@ static void	eating(t_philo *philo, t_table *table)
 	if (table->nb_philo == 1)
 	{
 		philo->status = DIED;
+		ft_usleep(table->death_time, philo);
+		print(timestamp() - philo->table->start, BRED "died" RESET, philo);
+		philo->table->isdead = 1;
 		pthread_mutex_unlock(&philo->fork_mutex);
 		return ;
 	}
 	pthread_mutex_lock(&philo->status_mutex);
 	philo->status = EATING;
-	print(timestamp() - philo->table->start, BLUE "is eating" RESET, philo);
+	print(timestamp() - philo->table->start, BGREEN "is eating" RESET, philo);
 	pthread_mutex_lock(&philo->nb_meals_mutex);
 	philo->nb_meals++;
 	philo->last_meal = timestamp() - table->start;
@@ -89,16 +92,8 @@ static void	thinking(t_philo *philo, t_table *table)
 		return ;
 	}
 	print(timestamp() - philo->table->start, "is thinking", philo);
-	if (table->death_time - (table->meal_time + table->sleep_time) > 0)
-		ft_usleep(table->death_time - (table->meal_time + table->sleep_time),
-			philo);
-	else
-	{
-		pthread_mutex_lock(&philo->status_mutex);
-		philo->status = DIED;
-		pthread_mutex_unlock(&philo->status_mutex);
-		philo->death_time = timestamp() - table->start;
-	}
+	if (table->death_time - table->meal_time <= table->meal_time)
+		ft_usleep(table->meal_time, philo);
 }
 
 void	*routine(void *phi)
@@ -106,18 +101,20 @@ void	*routine(void *phi)
 	t_philo	*philo;
 
 	philo = (t_philo *)phi;
-	while (!everybody_has_eaten(philo->table))
+	while (1)
 	{
-		if (has_anyone_died(philo->table))
+		if (is_dead(philo))
 			break ;
 		eating(philo, philo->table);
-		if (has_anyone_died(philo->table))
+		if (philo->nb_meals == philo->table->meals)
+			break ;
+		if (is_dead(philo))
 			break ;
 		sleeping(philo, philo->table);
-		if (has_anyone_died(philo->table))
+		if (is_dead(philo))
 			break ;
 		thinking(philo, philo->table);
-		if (has_anyone_died(philo->table))
+		if (is_dead(philo))
 			break ;
 	}
 	return (NULL);

@@ -1,13 +1,15 @@
 NAME = philo
 
 CC = cc
-C_FLAGS = -Wall -Wextra -Werror -pthread
+C_FLAGS = -Wall -Wextra -Werror -pthread #-fsanitize=thread
 
-SRCS =  check_args.c init_table.c utils_routine.c routine.c time.c philosophers.c
+SRCS_DIR = srcs
+SRCS =  $(SRCS_DIR)/check_args.c $(SRCS_DIR)/init_table.c \
+	$(SRCS_DIR)/routine.c $(SRCS_DIR)/time.c $(SRCS_DIR)/philosophers.c
 OBJ_DIR = objets
-OBJS = $(patsubst %.c,$(OBJ_DIR)/%.o,$(SRCS))
+OBJS = $(patsubst $(SRCS_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRCS))
 
-HEADER = philosophers.h
+HEADER = -I./includes
 
 GREEN = \033[1;32m
 RED = \033[1;31m
@@ -26,12 +28,12 @@ REDO = [ 🗘 ]
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	@$(CC) $(OBJS) -o $(NAME) || (echo "\n$(RED) ============ $(ERROR) Linking failed ! ====================================== $(RESET)\n"; exit 1)
+	@$(CC) $(C_FLAGS) $(OBJS) $(HEADER)  -o $(NAME) || (echo "\n$(RED) ============ $(ERROR) Linking failed ! ====================================== $(RESET)\n"; exit 1)
 	@echo "$(GREEN) ============ $(SUCCESS) Executable created ! ================================== $(RESET)"
 
-$(OBJ_DIR)/%.o: %.c $(HEADER)
+$(OBJ_DIR)/%.o: $(SRCS_DIR)/%.c
 	@mkdir -p $(OBJ_DIR)
-	@$(CC) $(C_FLAGS) -c $< -o $@ || (echo "\n$(RED) ============ $(ERROR) Compilation failed ! ================================== $(RESET)\n"; exit 1)
+	@$(CC) $(C_FLAGS) -c $< -o $@ $(HEADER) || (echo "\n$(RED) ============ $(ERROR) Compilation failed ! ================================== $(RESET)\n"; exit 1)
 	@echo "$(GREEN) ============ $(SUCCESS) Successful compilation ! ============================== $(RESET)"
 
 clean:

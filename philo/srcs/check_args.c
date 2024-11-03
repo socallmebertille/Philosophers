@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_args.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 17:34:17 by saberton          #+#    #+#             */
-/*   Updated: 2024/10/31 13:58:29 by saberton         ###   ########.fr       */
+/*   Updated: 2024/10/31 21:59:55 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ static long	ft_atol(const char *str)
 	while (str[i] >= '0' && str[i] <= '9')
 	{
 		nb = (nb * 10) + (str[i] - '0');
+		if (nb * sign < -2147483648 || nb * sign > 2147483647)
+			return (0);
 		i++;
 	}
 	return (nb * sign);

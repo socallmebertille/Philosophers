@@ -6,38 +6,43 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/26 21:52:50 by saberton          #+#    #+#             */
-/*   Updated: 2024/10/30 17:30:43 by saberton         ###   ########.fr       */
+/*   Updated: 2024/11/03 05:18:20 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-static int	is_dead(t_table *table)
+int	is_dead(t_philo *philo)
 {
-	t_philo	*philo;
-	int		nb;
+	t_table	*table;
 
-	if (!table)
-		return (0);
-	if (table->nb_philo == 1)
-		return (0);
-	philo = table->first;
-	nb = 1;
-	while (nb <= table->nb_philo)
+	table = philo->table;
+	if (checkvarisdead(table))
+		return (1);
+	if (timestamp() - table->start - philo->last_meal > table->death_time
+		&& philo->status != DIED)
 	{
 		pthread_mutex_lock(&philo->status_mutex);
-		if (philo->last_meal > table->death_time * philo->nb_meals)
-		{
-			philo->status = DIED;
-			pthread_mutex_unlock(&philo->status_mutex);
-			philo->death_time = timestamp() - table->start;
-			return (1);
-		}
+		philo->status = DIED;
+		print(timestamp() - philo->table->start, BRED "died" RESET, philo);
 		pthread_mutex_unlock(&philo->status_mutex);
-		philo = philo->right;
-		nb++;
+		pthread_mutex_lock(&table->table_mutex);
+		philo->table->isdead = 1;
+		pthread_mutex_unlock(&table->table_mutex);
+		return (1);
 	}
 	return (0);
+}
+
+int	checkvarisdead(t_table *table)
+{
+	int	ret;
+
+	ret = 0;
+	pthread_mutex_lock(&table->table_mutex);
+	ret = table->isdead;
+	pthread_mutex_unlock(&table->table_mutex);
+	return (ret);
 }
 
 long long	timestamp(void)
@@ -48,16 +53,23 @@ long long	timestamp(void)
 	return ((tv.tv_sec * 1000LL) + (tv.tv_usec / 1000));
 }
 
-int	ft_usleep(size_t milliseconds, t_philo *philo)
+void	ft_usleep(size_t milliseconds, t_philo *philo)
 {
 	size_t	start;
 
 	start = timestamp();
 	while ((timestamp() - start) < milliseconds)
 	{
-		if (is_dead(philo->table))
+		if (is_dead(philo))
 			break ;
 		usleep(500);
 	}
-	return (0);
+	return ;
+}
+
+void	print(int timestamp_in_ms, char *str, t_philo *philo)
+{
+	pthread_mutex_lock(&philo->table->print_mutex);
+	printf("%d %d %s\n", timestamp_in_ms, philo->seat, str);
+	pthread_mutex_unlock(&philo->table->print_mutex);
 }

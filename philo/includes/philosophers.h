@@ -6,26 +6,21 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 21:05:49 by saberton          #+#    #+#             */
-/*   Updated: 2024/10/30 17:55:19 by saberton         ###   ########.fr       */
+/*   Updated: 2024/11/02 22:35:38 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILOSOPHERS_H
 # define PHILOSOPHERS_H
 
+# include "colors.h"
 # include <pthread.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
 # include <sys/time.h>
 
-# define RESET "\e[0m"
-# define RED "\e[1;91m"
-# define GREEN "\e[1;92m"
-# define PURPLE "\033[1;35m"
-# define YELLOW "\e[1;93m"
 # define ORANGE "\e[38;5;214m"
-# define BLUE "\e[1;94m"
 
 # define WRONG_ARGS "Wrong number of args\n"
 # define EXEMPLE "Write something like that : ./philo 5 800 200 100 (100)\n"
@@ -46,7 +41,6 @@ typedef struct s_philo
 	int				seat;
 	int				nb_meals;
 	long			last_meal;
-	long			death_time;
 	struct s_philo	*left;
 	struct s_philo	*right;
 	struct s_table	*table;
@@ -69,18 +63,18 @@ typedef struct s_table
 	struct s_philo	*first;
 	pthread_mutex_t	table_mutex;
 	pthread_mutex_t	print_mutex;
+	int				isdead;
 }					t_table;
 
 void				ft_bzero(void *s, size_t n);
 void				print(int timestamp_in_ms, char *str, t_philo *philo);
 void				*routine(void *tab);
+void				ft_usleep(size_t milliseconds, t_philo *philo);
 void				exit_prog(t_table *table);
 int					check_args(char *str, int nb);
 int					init_table(char **av, t_table *table);
-int					everybody_has_eaten(t_table *table);
-int					has_anyone_died(t_table *table);
-int					who_died(t_table *table);
-int					ft_usleep(size_t milliseconds, t_philo *philo);
+int					is_dead(t_philo *philo);
+int					checkvarisdead(t_table *table);
 long long			timestamp(void);
 
 #endif
