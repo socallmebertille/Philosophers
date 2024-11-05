@@ -6,7 +6,7 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 17:46:09 by saberton          #+#    #+#             */
-/*   Updated: 2024/11/02 20:31:24 by saberton         ###   ########.fr       */
+/*   Updated: 2024/11/05 19:53:42 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,8 @@ int	init_table(char **av, t_table *table)
 	if (av[5])
 	{
 		table->meals = check_args(av[5], 5);
+		if (table->meals == -2)
+			return (free(table), exit(0), 0);
 		if (table->meals == -1)
 			return (printf(RED "Issue in init.\n" RESET), free(table), exit(0),
 				0);
