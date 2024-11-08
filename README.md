@@ -18,37 +18,49 @@ De fait, ils ne peuvet pas manger tous en meme temps.
 On peut dors et deja determiner les cas dans lesquels les philosphes vont mourir :
 
 - s'il n'y a qu'un seul philosophe (car une seul fourchette a sa dispo)
+
 ex : ./philo 1 800 200 100
-0 1 has taken a fork
-800 1 died
+
+| time | philos |
+|-----|----|
+| 0 | 1 has taken a fork |
+| 800 | 1 died |
 
 - s'il y a nb pair de philo ET que time_to_die / 2 < time_to_eat
+
 ex : ./philo 2 300 200 100
-0 1 has taken a fork
-0 1 has taken a fork
-0 1 is eating
-200 1 is sleeping
-200 2 has taken a fork
-200 2 has taken a fork
-200 2 is eating
-300 1 is thinking
-310 2 died
+
+| time | philos |
+|-----|----|
+| 0 | 1 has taken a fork |
+| 0 | 1 has taken a fork |
+| 0 | 1 is eating |
+| 200 | 1 is sleeping |
+| 200 | 2 has taken a fork |
+| 200 | 2 has taken a fork |
+| 200 | 2 is eating |
+| 300 | 1 is thinking |
+| 310 | 2 died |
 
 - s'il y a nb impair de philo ET que time_to_die / 3 < time_to_eat
+
 ex : ./philo 3 800 300 100
-0 1 has taken a fork
-0 1 has taken a fork
-0 1 is eating
-300 1 is sleeping
-300 2 has taken a fork
-300 2 has taken a fork
-300 2 is eating
-400 1 is thinking
-600 2 is sleeping
-600 3 has taken a fork
-600 3 has taken a fork
-600 3 is eating
-800 1 died
+
+| time | philos |
+|-----|----|
+| 0 | 1 has taken a fork |
+| 0 | 1 has taken a fork |
+| 0 | 1 is eating |
+| 300 | 1 is sleeping |
+| 300 | 2 has taken a fork |
+| 300 | 2 has taken a fork |
+| 300 | 2 is eating |
+| 400 | 1 is thinking |
+| 600 | 2 is sleeping |
+| 600 | 3 has taken a fork |
+| 600 | 3 has taken a fork |
+| 600 | 3 is eating |
+| 800 | 1 died |
 
 ## Step 2 : initialisation de la structure de table et de celles des philosophes
 
