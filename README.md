@@ -1,6 +1,12 @@
 # Philosophers
 I never thought philosophy would be so deadly
 
+## Testeur :
+
+```
+https://github.com/Rz-Rz/thales_tester.git
+```
+
 ## Step 1 : comprehension du sujet
 
 L'idee est de pouvoir faire vivre nb_philo philosophes selon une routine bien precise (1-manger / 2-dormir / 3-penser) qui doit durer au maximum time_to_die millisecondes. 
